@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.system.mapper.ThumbnailMapper">
+    <insert id="insert" parameterType="com.system.dto.ThumbnailDto">
+        INSERT INTO book_thumbnail_tbl (book_id, origin_file_name, stored_file_path, file_size) 
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.bookId}, #{item.originFileName}, #{item.storedFilePath}, #{item.fileSize})
+        </foreach> 
+    </insert>
+</mapper>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/default}">
+<div layout:fragment="content" class="container">
+	<h2 class="text-center mb-4 mt-4"
+		th:text="${book == null ? '도서 정보 등록' : '도서 정보 수정'}"></h2>
+
+	<form id="book-form" action="/book/add" method="post"
+		enctype="multipart/form-data">
+		<div class="mb-3">
+			<label for="title" class="form-label">제목</label> <input type="text"
+				class="form-control" id="title" name="title"
+				th:value="${book != null ? book.title : ''}">
+			<div class="invalid-feedback">제목을 입력해 주세요.</div>
+		</div>
+		<div class="mb-3">
+			<label for="writerId" class="form-label d-block">작가</label> <select
+				name="writerId" id="writerId" class="form-select">
+				<option value="">-- Select a writer --</option>
+				<option th:each="writer : ${writerList}" th:value="${writer.id}"
+					th:text="${writer.name}"></option>
+			</select>
+		</div>
+		<div class="mb-3">
+			<label for="category" class="form-label">장르</label> <input
+				type="text" class="form-control" id="category" name="category"
+				th:value="${book != null ? book.category : ''}">
+			<div class="invalid-feedback">장르를 입력해 주세요.</div>
+		</div>
+		<div class="mb-3">
+			<label for="publisher" class="form-label">출판사</label> <input
+				type="text" class="form-control" id="publisher" name="publisher"
+				th:value="${book != null ? book.publisher : ''}">
+			<div class="invalid-feedback">출판사를 입력해 주세요.</div>
+		</div>
+		<div class="mb-3">
+			<label for="publishedAt" class="form-label">출판일</label> <input
+				type="date" class="form-control" id="publishedAt" name="publishedAt"
+				min="1900-01-01" max="2024-08-08"
+				th:value="${book != null ? book.publishedAt : ''}">
+		</div>
+		<div class="mb-3">
+			<label for="totalPage" class="form-label">총 페이지 수</label> <input
+				type="number" class="form-control" id="totalPage" name="totalPage"
+				min="0" th:value="${book != null ? book.totalPage : 0}">
+			<div class="invalid-feedback">총 페이지 수를 입력해 주세요.</div>
+		</div>
+		<div class="mb-3">
+			<label for="summary" class="form-label">주요 내용</label>
+			<textarea class="form-control" id="summary" name="summary" rows="4"
+				th:text="${book != null ? book.summary : ''}"></textarea>
+			<div class="invalid-feedback">주요 내용을 입력해 주세요.</div>
+		</div>
+		<div class="mb-3">
+			<label for="files" class="form-label">파일</label> <input type="file"
+				class="form-control" name="files" id="files" multiple
+				accept="image/*" />
+		</div>
+
+		<!-- 이미지 미리보기 및 삭제 기능 -->
+		<div class="mb-3" id="image-preview-container"></div>
+		
+		<!-- 기존 썸네일 이미지 미리보기 및 삭제 기능 -->
+        <div class="mb-3" id="image-preview-container">
+            <!-- Thymeleaf를 사용하여 기존 이미지 미리보기 및 삭제 버튼 추가 -->
+            <div th:each="thumbnail : ${book.thumbnails}" class="position-relative mb-2">
+                <img th:src="@{'/images/' + ${thumbnail.storedFilePath}}" class="img-thumbnail" alt="미리보기">
+                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2" data-thumbnail-id="${thumbnail.id}" onclick="removeImage(this)">
+                    <i class="bi bi-x-circle"></i>
+                </button>
+                <!-- 숨겨진 필드로 삭제할 이미지 ID를 보관 -->
+                <input type="hidden" name="removeImageIds" value="${thumbnail.id}">
+            </div>
+        </div>
+
+		<div class="row g-2">
+			<div class="col-12 col-md-auto">
+				<input type="reset" class="btn btn-outline-warning w-100"
+					value="초기화" />
+			</div>
+			<div class="col-12 col-md-auto">
+				<button type="submit" class="btn btn-outline-primary w-100">등록하기</button>
+			</div>
+			<div class="col-12 col-md-auto">
+				<a href="/book/list" class="btn btn-outline-dark w-100">돌아가기</a>
+			</div>
+		</div>
+	</form>
+</div>
+
+</html>

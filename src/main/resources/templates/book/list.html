@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/default}"
+>
+	<div layout:fragment="content" class="container my-4">
+	    <h2 class="text-center mb-4">책 리스트</h2>
+	
+	    <div th:if="${list != null and !list.isEmpty()}">
+	        <div class="row" th:each="book, iterStat : ${list}">
+	            <div class="col-12 mb-4">
+	                <div class="card h-100 shadow-sm">
+	                    <div class="row g-0">
+	                        <!-- 이미지 섹션 -->
+	                        <div class="col-md-4 p-3" th:each="thumbnail, iterStat : ${book.thumbnails}" th:if="${iterStat.index == 0}">
+	                            <img th:src="@{'/images/' + ${thumbnail.storedFilePath}}" class="img-fluid rounded-start" alt="책 썸네일">
+	                        </div>
+	                        <!-- 책 정보 섹션 -->
+	                        <div class="col-md-8">
+	                            <div class="card-body">
+	                                <h5 class="card-title fw-bold" th:text="${book.title}"></h5>
+	                                <p class="card-text">
+	                                    <strong>작가:</strong>
+	                                    <span th:text="${book.writer.name}"></span>
+	                                </p>
+	                                <p class="card-text">
+	                                    <strong>출판사:</strong>
+	                                    <span th:text="${book.publisher}"></span>
+	                                </p>
+	                                <p class="card-text">
+	                                    <strong>요약:</strong>
+	                                    <span th:text="${book.summary}"></span>
+	                                </p>
+	                                <a th:href="@{/book/detail(id=${book.id})}" class="btn btn-primary mt-3">
+	                                    자세히 보기
+	                                </a>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	
+	    <div th:unless="${list != null and !list.isEmpty()}" class="text-center p-5">
+	        <div class="alert alert-light border rounded shadow-sm" role="alert">
+	            <h4 class="alert-heading text-secondary">등록된 도서가 없습니다!</h4>
+	            <p class="text-muted">현재 등록된 도서가 존재하지 않습니다. 아래 버튼을 클릭하여 새로운 도서를 등록해보세요.</p>
+	            <a href="/book/add" class="btn btn-outline-primary mt-4">
+	                <i class="bi bi-plus-circle"></i> 새로운 도서 등록하기
+	            </a>
+	        </div>
+	    </div>
+	</div>
+</html>

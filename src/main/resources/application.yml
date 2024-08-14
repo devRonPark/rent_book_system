@@ -1,0 +1,12 @@
+spring:
+    application:
+        name: book_rent_system
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/mybatis_proj_db
+        username: root
+        password: 1234		
+mybatis:
+    mapper-locations: mapper/**/*.xml
+    configuration:
+        map-underscore-to-camel-case: true

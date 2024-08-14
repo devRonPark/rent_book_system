@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.system.mapper.BookMapper">
+	<resultMap id="BookResultMap" type="com.system.dto.BookDto">
+		<id property="id" column="id" />
+		<result property="writerId" column="writer_id" />
+		<result property="title" column="title" />
+		<result property="category" column="category" />
+		<result property="publisher" column="publisher" />
+		<result property="summary" column="summary" />
+		<result property="totalPage" column="total_page" />
+		<result property="publishedAt" column="published_at" />
+
+		<!-- UserDto 매핑 -->
+		<association property="writer"
+			javaType="com.system.dto.UserDto">
+			<id property="id" column="writer_id" />
+			<result property="name" column="name" /> <!-- 예: UserDto에서 name을 매핑 -->
+			<result property="email" column="email" /> <!-- UserDto의 다른 필드들 매핑 -->
+			<!-- 필요한 경우 UserDto의 다른 필드들 추가 매핑 -->
+		</association>
+
+		<!-- ThumbnailDto 매핑 -->
+		<collection property="thumbnails"
+			ofType="com.system.dto.ThumbnailDto">
+			<id property="id" column="thumbnail_id" />
+			<result property="storedFilePath" column="stored_file_path" />
+		</collection>
+	</resultMap>
+	<select id="findAll" resultMap="BookResultMap">
+		SELECT b.*, u.*, thumb.* 
+		FROM book_tbl b 
+		LEFT JOIN user_tbl u 
+		ON b.writer_id = u.id 
+		LEFT JOIN book_thumbnail_tbl thumb 
+		ON b.id = thumb.book_id
+		WHERE b.is_deleted = 'n'
+	</select>
+	<select id="findById" parameterType="int" resultMap="BookResultMap">
+        SELECT b.*, u.*, thumb.* 
+        FROM book_tbl b 
+        LEFT JOIN user_tbl u 
+        ON b.writer_id = u.id 
+        LEFT JOIN book_thumbnail_tbl thumb 
+        ON b.id = thumb.book_id 
+        WHERE b.id = #{id} AND b.is_deleted = 'n'
+	</select>
+	<insert id="insert" parameterType="com.system.dto.BookDto"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO book_tbl (title, category, writer_id, publisher, total_page,
+		published_at, summary)
+		VALUES (#{title}, #{category}, #{writerId}, #{publisher}, #{totalPage},
+		#{publishedAt}, #{summary});
+	</insert>
+	<update id="softDeleteById" parameterType="int">
+		UPDATE book_tbl SET is_deleted = 'y' WHERE id = #{id};
+	</update>
+</mapper>
